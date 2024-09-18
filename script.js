@@ -152,16 +152,21 @@ console.log(isNumber(`string`)) //Output: false
 
 // // If an assignment is not yet due, do not include it in the results or the average. Additionally, if the learner’s submission is late (submitted_at is past due_at), deduct 10 percent of the total points possible from their score for that assignment.
 
-for (let x of AssignmentGroup.assignments){ //Looping into object
-    for (let y of LearnerSubmissions) { //Looping into array of objects
-      if(Object.values(x.due_at) < Object.values(y.submission.submitted_at)) //Date values
-      console.log({Submitted: `Assignment is not yet due`})
-  }
-      if (Object.values(y.submission.submitted_at) > Object.values(x.due_at)){ //if past due date (value of dates)
-       (y.submission.score) - (.10 * y.submission.score) //Deduct 10% from score 
-      }
-  }
+
+for (let i of LearnerSubmissions) {   //Looping through object
+  for (let j of AssignmentGroup.assignments) {    //Looping through array of objects
+    if (j.id == i.assignment_id) {   //Matching assignment ids 
+    let average = (i.submission.score / j.points_possible)  //Average of scores
+    console.log({avg: average}) //If ids match, find average
+  } 
   
+  else if (i.submission.submitted_at > j.due_at){ //if past due date
+    let newAverage = (i.submission.score / j.points_possible) - .1 //Deduct 10% from score 
+    console.log({late: newAverage}) //New score average of late submission
+   }
+  }
+}   
+
 
 // Create a function named getLearnerData() that accepts these values as parameters, in the order listed: (CourseInfo, AssignmentGroup, [LearnerSubmission]), and returns the formatted result, which should be an array of objects as described above.
 
@@ -178,22 +183,6 @@ for (let x of AssignmentGroup.assignments){ //Looping into object
   }
 
 
-
-
-  let learner1 = []
-  let learner2 = []
-
-for(i = 0; i < LearnerSubmissions.length; i++){
-  if(LearnerSubmissions[i].learner_id == 125){  
-    learner1.push((LearnerSubmissions[i].assignment_id + ": " + LearnerSubmissions[i].submission.score))
-  } else {
-    learner2.push((LearnerSubmissions[i].assignment_id + ": " + LearnerSubmissions[i].submission.score))
-    
-  } 
-}
-  
-console.log(object1)
-console.log(object2)
 
 //Function call-------------------------------------------------------------------------------------
   const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
