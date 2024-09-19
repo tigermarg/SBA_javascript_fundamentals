@@ -130,19 +130,21 @@ const CourseInfo = {
 
 //Error check: points_possible is 0---------------------------------------------------------------------
 
-    try{
-        if(AssignmentGroup.assignments.points_possible === 0){ //if points_possible is equal to 0
+AssignmentGroup.assignments.forEach(function(points) { //Looping through object using .forEach
+    try{  //Using try/catch to find errors
+        if(points.points_possible === 0){ //if points_possible is equal to 0
             console.log(`Not a valid entry`) //input error
         } else {
-            throw `Valid`; //Output: Valid
-        }
+            throw `Valid`; //throws valid output for all 3 assignments
+        } 
     } catch (error) { //if output results in error
         console.log(error)
-    }
+    } 
+  })  
   
 //Error check: Value is not a number, instead a string (NaN)--------------------------------------------
 
-function isNumber(value){ //function: if value is a number, typeof value returns a `number` (true)
+function isNumber(value){ //function: if value is a number, typeof value returns a `number` (true) //boolean
   return typeof value === `number`;
 }
 
@@ -152,49 +154,101 @@ console.log(isNumber(`string`)) //Output: false
 
 // // If an assignment is not yet due, do not include it in the results or the average. Additionally, if the learner’s submission is late (submitted_at is past due_at), deduct 10 percent of the total points possible from their score for that assignment.
 
+// Create a function named getLearnerData() that accepts these values as parameters, in the order listed: (CourseInfo, AssignmentGroup, [LearnerSubmission]), and returns the formatted result, which should be an array of objects as described above.
+
+
+//Helper functions----------------------------------------------------------------------------------
+
+function totalPoints() { //total points possible for assignments 1 & 2 (50 + 150)
+  return AssignmentGroup.assignments[0].points_possible + AssignmentGroup.assignments[1].points_possible
+   }
+   console.log(totalPoints()) // 200
+ 
+ 
+ function learner1() { //learner 1 total points for assignments 1 & 2 (47 + 150)
+   return LearnerSubmissions[0].submission.score + LearnerSubmissions[1].submission.score
+   }
+   console.log(learner1()) // 197
+ 
+ 
+ function learner2() { //learner 2 total points for assignments 1 & 2 (39 + 125)
+   return LearnerSubmissions[3].submission.score + (LearnerSubmissions[4].submission.score - (.1 * LearnerSubmissions[4].submission.score))
+   }
+   console.log(learner2())  // 165
+ 
+ 
+ const average1 = learner1() / totalPoints() //learner 1 average = total points / total points possible
+   console.log(`avg`, average1) // variable `average1` = 0.985
+ 
+ const average2 = learner2() / totalPoints() //learner 2 avearge = total points / total points possible 
+   console.log(`avg`, average2) // variable `average2` = 0.895 
+ 
+
+
+//Function----------------------------------------------------------------------------------------------
+
+  //Could not get application to work within a single function //`Helper functions` required to run-- anything above `Helper functions` section must be commented out to get results below
+
+  //Unsuccessful with function template:
+        // function getLearnerData(course, ag, data) {
+        // //     {
+        // //   return main;
+        // // }
+        // }
+
+  //Allocate memory for new arrays
+    let result1 = [];  
+    let result2 = []
+
+  for(let e of LearnerSubmissions){ //Looped through object to get learner ids
+    result1.push({id: e.learner_id})  //Added id1 to result1 array
+    result2.push({id: e.learner_id})  //Added id2 to result2 array
+  } 
+    result1.splice(1, 4)  //Removed extra ids for learner1
+    result2.splice(0, 4)  //Removed extra ids for learner2
+
+    result1.push({avg: average1}) //Added learner1 weighted average to array
+    result2.push({avg: average2}) //Added learner2 weighted average to array
+
+let todaysDate = `2024-09-18` //Created variable with manual date for loop below -- could not get newDate() to work
 
 for (let i of LearnerSubmissions) {   //Looping through object
   for (let j of AssignmentGroup.assignments) {    //Looping through array of objects
-    if (j.id == i.assignment_id) {   //Matching assignment ids 
-    let average = (i.submission.score / j.points_possible)  //Average of scores
-    console.log({avg: average}) //If ids match, find average
-  } 
+    if (j.id == i.assignment_id && i.submission.submitted_at <= j.due_at && j.due_at <= todaysDate) {   //Matching assignment ids and submission date is <= due date and due date is <= today's date 
+    let percent = (i.submission.score / j.points_possible)  //Percentage score of all assignments meeting the conditions
+    result1.push({grade: percent}) //Percentage scores for valid assignments //Couldn't figure out how to assign assignment id for each grade //Pushed results to result1 array
   
-  else if (i.submission.submitted_at > j.due_at){ //if past due date
-    let newAverage = (i.submission.score / j.points_possible) - .1 //Deduct 10% from score 
-    console.log({late: newAverage}) //New score average of late submission
-   }
-  }
-}   
+  } 
+    else if (j.id == i.assignment_id && j.due_at < todaysDate) { //Matching assignment ids and if past due date
+    let newPercent = (i.submission.score / j.points_possible) - .1 //Deduct 10% from score 
+    result2.push({grade: newPercent}) //New percentage score of late submission // Pushed results to result2 array
+   }continue;
+  } 
+}
+ const removed = result1.splice(4,4)  //Removed last object and stored to variable `removed` 
 
+  result2.splice(2,0,removed) //Added `removed` object from result1 and placed in appropriate position in result2 
 
-// Create a function named getLearnerData() that accepts these values as parameters, in the order listed: (CourseInfo, AssignmentGroup, [LearnerSubmission]), and returns the formatted result, which should be an array of objects as described above.
+  //Ended up with incorrect formatting -- two array of objects (separated) & the `removed` object ended up in its own array //Had a challenge looping through the data to create two objects within an array //Couldn't figure out how to nest the calculations for the averages in the loop
 
-//Function-------------------------------------------------------------------------------------
-
-  function getLearnerData(course, ag, data) {
-    let id = [];  //For new array
-    //collect data from LearnerSubmissions then compare (math on how to use it)
-    
-
-      }{
-
-    return result;
-  }
-
+  console.log(result1)   // [ { id: 125 }, { avg: 0.985 }, { grade: 0.94 }, { grade: 1 } ]
+  console.log(result2)  
+  //[
+  //   { id: 132 },
+  //   { avg: 0.825 },
+  //   [ { grade: 0.78 } ],
+  //   { grade: 0.8333333333333334 }
+  // ]
 
 
 //Function call-------------------------------------------------------------------------------------
-  const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
+//Unsuccessful with the function call  
+
+  // const result = getLearnerData(CourseInfo, AssignmentGroup, LearnerSubmissions);
   
-  console.log(result);
+    // console.log(result);
 
-
-//Helper function----------------------------------------------------------------------------------
-
-
-
-//Result ------------------------------------------------------------------------------------------
+//Result -------------------------------------------------------------------------------------------
 //   const result = [
 //     {
 //       id: 125,
