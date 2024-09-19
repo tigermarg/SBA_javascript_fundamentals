@@ -152,12 +152,15 @@ console.log(isNumber(10)) //Output: true
 console.log(isNumber(`string`)) //Output: false  
 
 
-// // If an assignment is not yet due, do not include it in the results or the average. Additionally, if the learner’s submission is late (submitted_at is past due_at), deduct 10 percent of the total points possible from their score for that assignment.
+// If an assignment is not yet due, do not include it in the results or the average. Additionally, if the learner’s submission is late (submitted_at is past due_at), deduct 10 percent of the total points possible from their score for that assignment.
 
 // Create a function named getLearnerData() that accepts these values as parameters, in the order listed: (CourseInfo, AssignmentGroup, [LearnerSubmission]), and returns the formatted result, which should be an array of objects as described above.
 
+// ---------------------------------------------------------------------------------------------------
 
-//Helper functions----------------------------------------------------------------------------------
+//Could not get application to work within a single function //Error check sections above must be commented out to get results below
+
+//Helper functions-------------------------------------------------------------------------------------
 
 function totalPoints() { //total points possible for assignments 1 & 2 (50 + 150)
   return AssignmentGroup.assignments[0].points_possible + AssignmentGroup.assignments[1].points_possible
@@ -184,12 +187,8 @@ function totalPoints() { //total points possible for assignments 1 & 2 (50 + 150
    console.log(`avg`, average2) // variable `average2` = 0.895 
  
 
-
 //Function----------------------------------------------------------------------------------------------
-
-  //Could not get application to work within a single function //`Helper functions` required to run-- anything above `Helper functions` section must be commented out to get results below
-
-  //Unsuccessful with function template:
+  //Unsuccessful with this function template:
         // function getLearnerData(course, ag, data) {
         // //     {
         // //   return main;
@@ -229,10 +228,16 @@ for (let i of LearnerSubmissions) {   //Looping through object
 
   result2.splice(2,0,removed) //Added `removed` object from result1 and placed in appropriate position in result2 
 
-  //Ended up with incorrect formatting -- two array of objects (separated) & the `removed` object ended up in its own array //Had a challenge looping through the data to create two objects within an array //Couldn't figure out how to nest the calculations for the averages in the loop
+  //Ended up with incorrect formatting -- two array of objects (separated) & the `removed` object ended up in its own array //Had a challenge looping through the data to create two objects within an array //Couldn't figure out how to nest the calculations for the averages in the loop 
 
-  console.log(result1)   // [ { id: 125 }, { avg: 0.985 }, { grade: 0.94 }, { grade: 1 } ]
+  //Final result:
+
+  console.log(result1)   
+
+  // [ { id: 125 }, { avg: 0.985 }, { grade: 0.94 }, { grade: 1 } ]
+
   console.log(result2)  
+
   //[
   //   { id: 132 },
   //   { avg: 0.825 },
